@@ -72,3 +72,5 @@ class Qhead(NetworkBase, nn.Module):
         q_values = self.fc2(f1)
         
         return q_values
+    
+    
