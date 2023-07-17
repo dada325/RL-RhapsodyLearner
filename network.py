@@ -3,6 +3,8 @@ import torch as T
 import torch.nn as nn
 import torch.nn.functional as F
 
+
+#comment here
 class NetworkBase:
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -23,7 +25,7 @@ class LinearBase(NetworkBase, nn.Module):
         super().__init__(name = name, chkpt_dir = checkpoint_dir)
         self.fc1 = nn.Linear(*input_dims, hidden_dims[0])
         self.fc2 = nn.Linear(hidden_dims[0], hidden_dims[0])
-        self.device = T.device('cuda:0' if T.cuda.is_available(), else 'cpu')
+        self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
         self.to(self.device)
         
     def forward(self, state):
@@ -72,5 +74,3 @@ class Qhead(NetworkBase, nn.Module):
         q_values = self.fc2(f1)
         
         return q_values
-    
-    
