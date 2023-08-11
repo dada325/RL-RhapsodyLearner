@@ -6,8 +6,7 @@ This is for my research on the Algorithmic Aspects of Learning in Games, more sp
 But it is also an implementation of some algorithms in deep RL that is very classic, in JAX (WIP) and pytorch. 
 
 
-# Markov Potential Game
-Some idea on the algo direction 
+# Multiagent
 
 ## Experience Sharing: 
 One way to implement collaborative learning is to have each agent learn not just from its own experiences but also from the experiences of other agents. This can be achieved by sampling experiences from the memory buffers of all agents during the learning phase.
