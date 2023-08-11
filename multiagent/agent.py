@@ -1,4 +1,3 @@
-
 import numpy as np
 import torch as T
 import torch.nn.functional as F
@@ -76,23 +75,32 @@ class ActorCriticAgent:
         if not memory.ready():
             return
 
-        actor_states, states, actions, rewards,\
-            actor_new_states, states_, dones = memory.sample_buffer()
-
+        # Experience Sharing
+        all_actor_states, all_states, all_actions, all_rewards, all_actor_new_states, all_states_, all_dones = [], [], [], [], [], [], []
+        for agent in agent_list:
+            actor_states, states, actions, rewards, actor_new_states, states_, dones = memory.sample_buffer()
+            all_actor_states.append(actor_states)
+            all_states.append(states)
+            all_actions.append(actions)
+            all_rewards.append(rewards)
+            all_actor_new_states.append(actor_new_states)
+            all_states_.append(states_)
+            all_dones.append(dones)
+        
         device = self.actor.device
 
-        states = T.tensor(np.array(states), dtype=T.float, device=device)
-        rewards = T.tensor(np.array(rewards), dtype=T.float, device=device)
-        states_ = T.tensor(np.array(states_), dtype=T.float, device=device)
-        dones = T.tensor(np.array(dones), device=device)
+        states = T.tensor(np.array(all_states), dtype=T.float, device=device)
+        rewards = T.tensor(np.array(all_rewards), dtype=T.float, device=device)
+        states_ = T.tensor(np.array(all_states_), dtype=T.float, device=device)
+        dones = T.tensor(np.array(all_dones), device=device)
 
-        actor_states = [T.tensor(actor_states[idx],
+        actor_states = [T.tensor(all_actor_states[idx],
                                  device=device, dtype=T.float)
                         for idx in range(len(agent_list))]
-        actor_new_states = [T.tensor(actor_new_states[idx],
+        actor_new_states = [T.tensor(all_actor_new_states[idx],
                                      device=device, dtype=T.float)
                             for idx in range(len(agent_list))]
-        actions = [T.tensor(actions[idx], device=device, dtype=T.float)
+        actions = [T.tensor(all_actions[idx], device=device, dtype=T.float)
                    for idx in range(len(agent_list))]
 
         with T.no_grad():
@@ -100,7 +108,7 @@ class ActorCriticAgent:
                                  for idx, agent in enumerate(agent_list)],
                                 dim=1)
             critic_value_ = self.target_critic.forward(
-                                states_, new_actions).squeeze()
+                            states_, new_actions).squeeze()
             critic_value_[dones[:, self.agent_idx]] = 0.0
             target = rewards[:, self.agent_idx] + self.gamma * critic_value_
 
@@ -114,8 +122,8 @@ class ActorCriticAgent:
         T.nn.utils.clip_grad_norm_(self.critic.parameters(), 10.0)
         self.critic.optimizer.step()
 
-        actions[self.agent_idx] = self.actor.forward(
-                actor_states[self.agent_idx])
+        # Action Consideration
+        actions[self.agent_idx] = self.actor.forward(actor_states[self.agent_idx])
         actions = T.cat([actions[i] for i in range(len(agent_list))], dim=1)
         actor_loss = -self.critic.forward(states, actions).mean()
         self.actor.optimizer.zero_grad()
