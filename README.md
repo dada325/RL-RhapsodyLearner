@@ -6,6 +6,13 @@ This is for my research on the Algorithmic Aspects of Learning in Games, more sp
 But it is also an implementation of some algorithms in deep RL that is very classic, in JAX (WIP) and pytorch. 
 
 
+
+
+# Update: 
+
+As an Reinforcement learning framework, the code structure now is a bit chaotic and lack of efficient. I am planing to redo the refactoration and add more modularity, example and flexibility. 
+
+
 # Multiagent
 
 ## Experience Sharing: 
