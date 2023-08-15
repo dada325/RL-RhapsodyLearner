@@ -1,5 +1,5 @@
 # RL-RhapsodyLearner
-Rhapsody Learner is the framework of Deep Reinforcement learning 
+Rhapsody Learner is the library of Deep Reinforcement learning 
 
 This is for my research on the Algorithmic Aspects of Learning in Games, more specifically it is a learner which learn optimal strategies in complex, multi-agent environments where the other agents are also learning and adapting their strategies. 
 
@@ -10,7 +10,7 @@ But it is also an implementation of some algorithms in deep RL that is very clas
 
 # Update: 
 
-As an Reinforcement learning framework, the code structure now is a bit chaotic and lack of efficient. I am planing to redo the refactoration and add more modularity, example and flexibility. 
+As an Reinforcement learning library, the code structure now is a bit chaotic and lack of efficient. I am planing to redo the refactoration and add more modularity, example and flexibility. 
 
 
 # Multiagent
